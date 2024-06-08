@@ -5,6 +5,10 @@
   --background-color: #f5f5f5;
   --tuned-color: #84818A;
 }
+.highlight {
+  color: red;
+  background: #6236FF;
+}
 @for $i from 1 through 10 {
   // Margins
   .m#{$i} {
