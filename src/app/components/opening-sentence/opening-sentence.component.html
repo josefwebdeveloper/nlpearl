@@ -6,7 +6,7 @@
        class="editable-content">
   </div>
   <div class="placeholders">
-    <button *ngFor="let placeholder of placeholders" (click)="insertPlaceholder(placeholder)">
+    <button class="placeholder-button" *ngFor="let placeholder of placeholders" (click)="insertPlaceholder(placeholder)">
       {{ placeholder }}
     </button>
   </div>
