@@ -12,7 +12,7 @@ import {CommonModule} from "@angular/common";
 })
 export class FormComponent implements OnInit{
   form!: FormGroup;
-
+  placeholdersMockData=['Agent Name', 'Company Name', 'First Name', 'Last Name']
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {

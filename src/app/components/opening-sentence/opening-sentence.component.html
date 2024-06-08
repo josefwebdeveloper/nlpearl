@@ -1,9 +1,15 @@
 <div class="form-container">
-  <div class="title">Opening Sentence</div>
-  <textarea #textarea id="opening-sentence" [value]="value" (input)="onInput($event)"></textarea>
+  <div class="label">Opening Sentence</div>
+  <div #contenteditable
+       contenteditable="true"
+       (input)="onInput($event)"
+       class="editable-content">
+  </div>
   <div class="placeholders">
     <button *ngFor="let placeholder of placeholders" (click)="insertPlaceholder(placeholder)">
       {{ placeholder }}
     </button>
   </div>
+
 </div>
+

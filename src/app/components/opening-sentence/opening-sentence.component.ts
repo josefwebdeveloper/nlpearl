@@ -1,6 +1,6 @@
 import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule, NgForOf } from "@angular/common";
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule} from "@angular/forms";
+import {CommonModule, NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-opening-sentence',
@@ -20,7 +20,7 @@ import { CommonModule, NgForOf } from "@angular/common";
 })
 export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
   @Input() placeholders: string[] = [];
-  @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('contenteditable') contentEditable!: ElementRef<HTMLDivElement>;
   value: string = '';
   onChange = (value: any) => {};
   onTouched = () => {};
@@ -43,34 +43,112 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    if (!this.textarea) return;
-    this.textarea.nativeElement.disabled = isDisabled;
+    if (!this.contentEditable) return;
+    this.contentEditable.nativeElement.contentEditable = String(!isDisabled);
   }
 
   onInput(event: any) {
-    this.value = event.target.value;
-    this.onChange(this.value);
-    this.highlightPlaceholders();
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
+
+    if (range) {
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(this.contentEditable.nativeElement);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      const cursorPos = preCaretRange.toString().length;
+
+      this.value = this.contentEditable.nativeElement.innerText;
+      this.onChange(this.value);
+      this.highlightPlaceholders();
+
+      this.setCursorPosition(cursorPos);
+    }
+  }
+
+  setCursorPosition(chars: number) {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    const textNode = this.getTextNode(this.contentEditable.nativeElement, chars);
+
+    if (textNode.node) {
+      range.setStart(textNode.node, textNode.offset);
+      range.collapse(true);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    } else {
+      const lastTextNode = this.getLastTextNode(this.contentEditable.nativeElement);
+      if (lastTextNode.node) {
+        range.setStart(lastTextNode.node, lastTextNode.offset);
+        range.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+    }
+  }
+
+  getTextNode(element: HTMLElement, chars: number): { node: Node | null, offset: number } {
+    let node: Node | null = element;
+    let found = false;
+
+    while (node && !found) {
+      if (node.nodeType === 3) {  // Text node
+        if (chars <= node.textContent!.length) {
+          found = true;
+        } else {
+          chars -= node.textContent!.length;
+        }
+      } else {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          const childNode = node.childNodes[i];
+          const result = this.getTextNode(childNode as HTMLElement, chars);
+          if (result.node) {
+            return result;
+          }
+        }
+      }
+      if (!found) {
+        node = node.nextSibling;
+      }
+    }
+    return { node: found ? node : null, offset: chars };
+  }
+
+  getLastTextNode(element: HTMLElement): { node: Node | null, offset: number } {
+    let node: Node | null = element;
+    while (node) {
+      if (node.nodeType === 3) {  // Text node
+        return { node, offset: node.textContent!.length };
+      }
+      if (node.childNodes.length > 0) {
+        node = node.childNodes[node.childNodes.length - 1];
+      } else {
+        node = node.previousSibling;
+      }
+    }
+    return { node: null, offset: 0 };
   }
 
   insertPlaceholder(placeholder: string) {
-    const cursorPos = this.textarea.nativeElement.selectionStart;
-    const textBefore = this.value.substring(0, cursorPos);
-    const textAfter = this.value.substring(cursorPos, this.value.length);
-    this.value = `${textBefore}[${placeholder}]${textAfter}`;
-    this.onChange(this.value);
-    this.highlightPlaceholders();
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+    const placeholderElement = document.createElement('span');
+    placeholderElement.classList.add('highlight');
+    placeholderElement.textContent = `[${placeholder}]`;
+    range.insertNode(placeholderElement);
+    range.collapse(false);
+    this.onInput(null);
   }
 
   highlightPlaceholders() {
-    if (this.textarea) {
-      const content = this.value;
-      let highlightedContent = content;
+    if (this.contentEditable) {
+      let highlightedContent = this.value;
       this.placeholders.forEach(ph => {
         const regex = new RegExp(`\\[${ph}\\]`, 'g');
         highlightedContent = highlightedContent.replace(regex, `<span class="highlight">[${ph}]</span>`);
       });
-      this.textarea.nativeElement.innerHTML = highlightedContent;
+      this.contentEditable.nativeElement.innerHTML = highlightedContent;
     }
   }
 }
