@@ -25,9 +25,8 @@ export class FormComponent implements OnInit{
 
   onSubmit() {
     if (this.form.valid) {
-      console.log('Form Submitted', this.form.value);
-    } else {
-      console.log('Form is invalid');
+      console.log(this.form.value);
+      alert(this.form.value)
     }
   }
 }
