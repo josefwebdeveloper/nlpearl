@@ -1,6 +1,6 @@
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule, NgForOf } from "@angular/common";
+import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule} from "@angular/forms";
+import {CommonModule, NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-opening-sentence',
@@ -22,8 +22,10 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
   @Input() placeholders: string[] = [];
   @ViewChild('contenteditable') contentEditable!: ElementRef<HTMLDivElement>;
   value: string = '';
-  onChange: (value: any) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: any) => void = () => {
+  };
+  onTouched: () => void = () => {
+  };
 
   ngOnInit() {
     this.highlightPlaceholders();
@@ -69,7 +71,7 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
   setCursorPosition(chars: number) {
     const selection = window.getSelection();
     const range = document.createRange();
-    const { node, offset } = this.getTextNode(this.contentEditable.nativeElement, chars);
+    const {node, offset} = this.getTextNode(this.contentEditable.nativeElement, chars);
 
     if (node) {
       range.setStart(node, offset);
@@ -77,7 +79,7 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
       selection?.removeAllRanges();
       selection?.addRange(range);
     } else {
-      const { node: lastNode, offset: lastOffset } = this.getLastTextNode(this.contentEditable.nativeElement);
+      const {node: lastNode, offset: lastOffset} = this.getLastTextNode(this.contentEditable.nativeElement);
       if (lastNode) {
         range.setStart(lastNode, lastOffset);
         range.collapse(true);
@@ -111,14 +113,14 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
         node = node.nextSibling;
       }
     }
-    return { node: found ? node : null, offset: chars };
+    return {node: found ? node : null, offset: chars};
   }
 
   getLastTextNode(element: HTMLElement): { node: Node | null, offset: number } {
     let node: Node | null = element;
     while (node) {
       if (node.nodeType === 3) {  // Text node
-        return { node, offset: node.textContent!.length };
+        return {node, offset: node.textContent!.length};
       }
       if (node.childNodes.length > 0) {
         node = node.childNodes[node.childNodes.length - 1];
@@ -126,7 +128,7 @@ export class OpeningSentenceComponent implements ControlValueAccessor, OnInit {
         node = node.previousSibling;
       }
     }
-    return { node: null, offset: 0 };
+    return {node: null, offset: 0};
   }
 
   insertPlaceholder(placeholder: string) {

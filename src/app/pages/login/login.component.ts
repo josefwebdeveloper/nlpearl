@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormComponent} from "../../components/form/form.component";
 import {PromoComponent} from "../../components/promo/promo.component";
 

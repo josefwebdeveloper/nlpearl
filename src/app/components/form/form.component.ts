@@ -10,10 +10,12 @@ import {CommonModule} from "@angular/common";
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
-export class FormComponent implements OnInit{
+export class FormComponent implements OnInit {
   form!: FormGroup;
-  placeholdersMockData=['Agent Name', 'Company Name', 'First Name', 'Last Name']
-  constructor(private fb: FormBuilder) {}
+  placeholdersMockData = ['Agent Name', 'Company Name', 'First Name', 'Last Name']
+
+  constructor(private fb: FormBuilder) {
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
