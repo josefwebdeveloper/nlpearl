@@ -26,7 +26,7 @@ export class FormComponent implements OnInit{
   onSubmit() {
     if (this.form.valid) {
       console.log(this.form.value);
-      alert(this.form.value)
+      alert(this.form.value.openingSentence)
     }
   }
 }

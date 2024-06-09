@@ -1,6 +1,6 @@
 <div class="form-container">
   <div class="title">Test Page</div>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" >
     <label for="name">Name</label>
     <input type="text" id="name" formControlName="name"/>
     <label for="phone">Phone</label>
@@ -9,6 +9,6 @@
       formControlName="openingSentence"
       [placeholders]="placeholdersMockData">
     </app-opening-sentence>
-    <button class="submit" type="submit">Submit</button>
+    <button class="submit" (click)="onSubmit()">Submit</button>
   </form>
 </div>
