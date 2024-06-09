@@ -1,12 +1,12 @@
 :host{
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   box-sizing: border-box;
+  margin: 0 50px;
 }
-.form-container {
-}
+
 
 .title{
   font-size: 24px;
@@ -28,7 +28,7 @@ label {
 }
 
 input {
-  width: 400px;
+  width: 100%;
   padding: 8px;
   margin-bottom: 16px;
   border: 1px solid #ccc;
@@ -40,14 +40,15 @@ input:hover {
   border-color: var(--primary-color);
 }
 
-button {
+.submit {
+  width: 105%;
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   background-color: #000;
   color: #fff;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {

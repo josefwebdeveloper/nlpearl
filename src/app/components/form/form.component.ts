@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {OpeningSentenceComponent} from "../opening-sentence/opening-sentence.component";
+import {OpeningSentenceComponent} from "./opening-sentence/opening-sentence.component";
 import {CommonModule} from "@angular/common";
 
 @Component({
